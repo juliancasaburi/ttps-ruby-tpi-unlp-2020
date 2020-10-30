@@ -9,8 +9,15 @@ Bundler.require :default
 # Agrega el directorio `lib' del proyecto al load path de Ruby
 $LOAD_PATH.unshift(File.absolute_path("#{__dir__}/../lib"))
 
+# Requiere dotenv para cargar configuraciones desde un archivo .env a ENV
+require 'dotenv/load'
+
 # Requiere `lib/rn.rb` como punto de partida para cargar todas las definiciones necesarias
 require 'rn'
+
+# Verifica la existencia del directorio que funciona como "cajon de notas". En caso de no existir, lo crea
+DIRECTORY = ENV['RN_DIRECTORY']
+FileUtils.mkdir_p(DIRECTORY) unless File.directory?(DIRECTORY)
 
 # Ejecuta, utilizando la gema dry-cli, los comandos que permiten utilizar la herramienta
 Dry::CLI.new(RN::Commands).call
