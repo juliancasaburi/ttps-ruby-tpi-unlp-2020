@@ -5,8 +5,15 @@ GEM
     dotenv (2.7.6)
     dry-cli (0.6.0)
       concurrent-ruby (~> 1.0)
+    ffi (1.13.1)
+    listen (3.2.1)
+      rb-fsevent (~> 0.10, >= 0.10.3)
+      rb-inotify (~> 0.9, >= 0.9.10)
     pastel (0.8.0)
       tty-color (~> 0.5)
+    rb-fsevent (0.10.4)
+    rb-inotify (0.10.1)
+      ffi (~> 1.0)
     tty-color (0.5.2)
     tty-cursor (0.7.1)
     tty-editor (0.6.0)
@@ -27,6 +34,7 @@ PLATFORMS
 DEPENDENCIES
   dotenv (~> 2.7, >= 2.7.6)
   dry-cli (~> 0.6)
+  listen (~> 3.0)
   tty-editor (~> 0.6.0)
 
 RUBY VERSION

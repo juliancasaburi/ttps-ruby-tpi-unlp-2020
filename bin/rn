@@ -6,18 +6,22 @@ require 'bundler/setup'
 
 Bundler.require :default
 
-# Agrega el directorio `lib' del proyecto al load path de Ruby
-$LOAD_PATH.unshift(File.absolute_path("#{__dir__}/../lib"))
-
 # Requiere dotenv para cargar configuraciones desde un archivo .env a ENV
 require 'dotenv/load'
 
-# Requiere `lib/rn.rb` como punto de partida para cargar todas las definiciones necesarias
-require 'rn'
+# Setea configuracion default si no puede leerla desde el .env
+ENV['RN_DIRECTORY'] = ENV['RN_DIRECTORY'] || "#{Dir.home}/.my_rns" # RN working directory
+ENV['RN_NOTE_EXTENSION'] = ENV['RN_NOTE_EXTENSION'] || 'rn' # Note file extension
+ENV['RN_GLOBAL_BOOK_NAME'] = ENV['RN_GLOBAL_BOOK_NAME'] || 'global' # Global book name
 
 # Verifica la existencia del directorio que funciona como "cajon de notas". En caso de no existir, lo crea
-DIRECTORY = ENV['RN_DIRECTORY']
-FileUtils.mkdir_p(DIRECTORY) unless File.directory?(DIRECTORY)
+FileUtils.mkdir_p(DIRECTORY) unless File.directory?(ENV['RN_DIRECTORY'])
+
+# Agrega el directorio `lib' del proyecto al load path de Ruby
+$LOAD_PATH.unshift(File.absolute_path("#{__dir__}/../lib"))
+
+# Requiere `lib/rn.rb` como punto de partida para cargar todas las definiciones necesarias
+require 'rn'
 
 # Ejecuta, utilizando la gema dry-cli, los comandos que permiten utilizar la herramienta
 Dry::CLI.new(RN::Commands).call

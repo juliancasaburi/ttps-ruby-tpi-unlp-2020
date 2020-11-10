@@ -6,4 +6,6 @@ gem 'dry-cli', '~> 0.6'
 
 gem 'dotenv', '~> 2.7', '>= 2.7.6'
 
-gem "tty-editor", "~> 0.6.0"
+gem 'tty-editor', '~> 0.6.0'
+
+gem 'listen', '~> 3.0'
