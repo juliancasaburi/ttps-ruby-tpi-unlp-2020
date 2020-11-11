@@ -38,7 +38,7 @@ module RN
           global = options[:global]
           if !name.nil? && !name.strip.empty?
             Helpers::BookHelper.delete_book(name)
-            puts "El cuaderno con título #{name} fue eliminado exitosamente."
+            puts "El cuaderno con nombre #{name} fue eliminado exitosamente."
           elsif global
             Helpers::BookHelper.delete_global_notes
             puts "El cuaderno #{ENV['RN_GLOBAL_BOOK_NAME']} fue vaciado exitosamente."

@@ -1,6 +1,6 @@
 module RN
   module PersistenceLayer
-    class PersistenceLayer
+    class FilePersistenceLayer
       def self.load_file(directory, file_name)
         File.open("#{directory}/#{file_name}", 'r')
       end

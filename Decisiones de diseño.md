@@ -10,7 +10,7 @@
   * `lib/rn/exceptions.rb` y `lib/rn/exceptions/*.rb` son las definiciones de excepciones, para los distintos errores que pueden producirse durante la ejecución del programa. Estas excepciones son lanzadas por `BookHelper` y `NoteHelper`
   * `lib/rn/helpers.rb` y `lib/rn/helpers/*.rb` son las definiciones de helpers. Estos son clases intermediaras que permiten, desde los comandos realizar las operaciones de los modelos `Book` y `Note`.
   * `lib/rn/models.rb` y `lib/rn/models/*.rb` son las definiciones de modelos.
-  * `lib/rn/persistence_layer.rb` y `lib/rn/persistence_layer/persistence_layer.rb` define la clase PersistenceLayer, la cual se encarga de lectura/escritura de archivos y directorios.
+  * `lib/rn/persistence_layer.rb` y `lib/rn/persistence_layer/file_persistence_layer.rb` definen la clase FilePersistenceLayer, la cual se encarga de lectura/escritura de archivos y directorios.
   * `lib/rn/version.rb` define la versión de la herramienta, utilizando [SemVer](https://semver.org/lang/es/).
 * `bin/`: directorio donde reside cualquier archivo ejecutable, siendo el más notorio `rn`, que se utiliza como punto de entrada para el uso de la herramienta.
 
