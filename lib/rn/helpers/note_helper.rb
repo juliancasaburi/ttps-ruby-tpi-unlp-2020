@@ -5,13 +5,15 @@ module RN
       EXTENSION = ENV['RN_NOTE_EXTENSION']
 
       class << self
-        def self.raise_if_book_doesnt_exist(directory, book_name) # Levanta excepción si no existe el cuaderno
+        # Levanta excepción si no existe el cuaderno
+        def raise_if_book_doesnt_exist(directory, book_name)
           raise Exceptions::BookNotFoundException, book_name unless DirectoryHelper.directory_exists?(directory)
 
           true
         end
 
-        def self.raise_if_note_doesnt_exist(directory, note_title, book_name) # Levanta excepción si no existe la nota
+        # Levanta excepción si no existe la nota
+        def raise_if_note_doesnt_exist(directory, note_title, book_name)
           unless File.file?(DirectoryHelper.note_route(directory, note_title, EXTENSION))
             raise Exceptions::NoteNotFoundException.new(note_title, book_name)
           end
@@ -19,7 +21,8 @@ module RN
           true
         end
 
-        def self.raise_if_note_already_exists(directory, note_title, book_name) # Levanta excepción si existe la nota
+        # Levanta excepción si existe la nota
+        def raise_if_note_already_exists(directory, note_title, book_name)
           if File.file?(DirectoryHelper.note_route(directory, note_title, EXTENSION))
             raise Exceptions::NoteAlreadyExistsException.new(note_title, book_name)
           end
@@ -27,7 +30,7 @@ module RN
           false
         end
 
-        def self.open_and_wait(full_path)
+        def open_and_wait(full_path)
           # Abre la nota en el editor por defecto
           editor = TTY::Editor.new(raise_on_failure: true)
           editor.open(full_path)
@@ -38,7 +41,7 @@ module RN
           listener.start
           sleep
         end
-    end
+      end
 
       def self.index
         hash = {}
@@ -82,7 +85,8 @@ module RN
         PersistenceLayer::PersistenceLayer.save_file(DirectoryHelper.working_directory(BASE_DIRECTORY, note.book), DirectoryHelper.note_file_name(note.title, EXTENSION), note.content)
       end
 
-      def self.load(book_name, note_title) # Retorna una instancia de Note dado el nombre del cuaderno y el titulo de la nota
+      # Retorna una instancia de Note dado el nombre del cuaderno y el titulo de la nota
+      def self.load(book_name, note_title)
         book_name ||= ENV['RN_GLOBAL_BOOK_NAME']
         directory = DirectoryHelper.working_directory(BASE_DIRECTORY, book_name)
         NoteHelper.raise_if_book_doesnt_exist(directory, book_name)
@@ -110,7 +114,7 @@ module RN
 
       def self.delete(book_name, note_title)
         book_name ||= ENV['RN_GLOBAL_BOOK_NAME']
-        directory = directory = DirectoryHelper.working_directory(BASE_DIRECTORY, book_name)
+        directory = DirectoryHelper.working_directory(BASE_DIRECTORY, book_name)
         begin
           PersistenceLayer::PersistenceLayer.delete_file(DirectoryHelper.note_route(directory, note_title, EXTENSION))
         rescue Errno::ENOENT
@@ -119,7 +123,7 @@ module RN
       end
 
       def self.retitle(old_title, note)
-        directory = directory = DirectoryHelper.working_directory(BASE_DIRECTORY, note.book)
+        directory = DirectoryHelper.working_directory(BASE_DIRECTORY, note.book)
         NoteHelper.raise_if_note_already_exists(directory, note.title, note.book)
         FileUtils.mv(DirectoryHelper.note_route(directory, old_title, EXTENSION), DirectoryHelper.note_route(directory, note.title, EXTENSION))
       end
