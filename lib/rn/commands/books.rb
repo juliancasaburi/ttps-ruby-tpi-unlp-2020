@@ -12,7 +12,13 @@ module RN
         ]
 
         def call(name:, **)
-          warn "TODO: Implementar creación del cuaderno de notas con nombre '#{name}'.\nPodés comenzar a hacerlo en #{__FILE__}:#{__LINE__}."
+          if name.strip.empty?
+            puts 'Debe ingresar un nombre de cuaderno no vacío'
+          else
+            book = Models::Book.new(name)
+            Helpers::BookHelper.create(book)
+            puts "El cuaderno #{book.name} fue creado exitosamente."
+          end
         end
       end
 
@@ -30,7 +36,15 @@ module RN
 
         def call(name: nil, **options)
           global = options[:global]
-          warn "TODO: Implementar borrado del cuaderno de notas con nombre '#{name}' (global=#{global}).\nPodés comenzar a hacerlo en #{__FILE__}:#{__LINE__}."
+          if !name.nil? && !name.strip.empty?
+            Helpers::BookHelper.delete_book(name)
+            puts "El cuaderno con nombre #{name} fue eliminado exitosamente."
+          elsif global
+            Helpers::BookHelper.delete_global_notes
+            puts "El cuaderno #{ENV['RN_GLOBAL_BOOK_NAME']} fue vaciado exitosamente."
+          else
+            puts 'Debe ingresar un nombre de cuaderno no vacío'
+          end
         end
       end
 
@@ -42,7 +56,13 @@ module RN
         ]
 
         def call(*)
-          warn "TODO: Implementar listado de los cuadernos de notas.\nPodés comenzar a hacerlo en #{__FILE__}:#{__LINE__}."
+          dirs = Helpers::BookHelper.index
+          if dirs.empty?
+            puts 'No existe ningún cuaderno'
+          else
+            puts 'Listado de Cuadernos'
+            dirs.each { |d| puts File.basename d }
+          end
         end
       end
 
@@ -59,7 +79,13 @@ module RN
         ]
 
         def call(old_name:, new_name:, **)
-          warn "TODO: Implementar renombrado del cuaderno de notas con nombre '#{old_name}' para que pase a llamarse '#{new_name}'.\nPodés comenzar a hacerlo en #{__FILE__}:#{__LINE__}."
+          if old_name.strip.empty? || new_name.strip.empty?
+            puts 'Debe ingresar un nombre de cuaderno no vacío'
+          else
+            book = Models::Book.new(new_name)
+            Helpers::BookHelper.rename(old_name, book.name)
+            puts "El cuaderno con nombre #{old_name} fue renombrado como #{book.name}"
+          end
         end
       end
     end
