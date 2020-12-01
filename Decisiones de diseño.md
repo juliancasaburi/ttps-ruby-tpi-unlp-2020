@@ -110,7 +110,6 @@ ruby bin/rn n create usando-named-argument --content "Este es un contenido de pr
 multilinea"
 ```
 
-
 ## Contenido usando editor de texto predeterminado
 
 El contenido de una nota puede editarse durante la creación. Se abre el editor de texto predeterminado y el usuario puede escribir el contenido.  
@@ -124,3 +123,25 @@ ruby bin/rn n create "usando editor de texto"
 
 > NOTA: el título de la nota será reemplazado por **usando_editor_de_texto**
 
+
+# Exportación de notas
+
+## Formatos
+
+Las notas soportan contenido con texto rico en formato [MarkDown](https://en.wikipedia.org/wiki/Markdown) y pueden ser exportadas a archivos PDF.
+
+## Operaciones
+
+Se implementa la exportación, según se indique mediante argumentos, de:
+
+- Una nota en particular
+- Todas las notas de un cuaderno en particular
+- Todas las notas presentes en todos los cuadernos del cajón de notas
+
+## Gemas utilizadas 
+
+Para realizar la exportación, se utilizan las gemas:
+
+https://github.com/gettalong/kramdown
+
+https://github.com/kramdown/converter-pdf

@@ -26,7 +26,7 @@ module RN
             # Si se provee --content, no se abre el editor visual
             if !content.nil?
               Helpers::NoteHelper.save(note)
-              puts "La nota con título #{title} fue creada exitosamente en el cuaderno #{note.book}"
+              puts "La nota con título #{note.title} fue creada exitosamente en el cuaderno #{note.book}"
             else
               Helpers::NoteHelper.save_using_editor(note)
             end
@@ -121,10 +121,8 @@ module RN
         def call(**options)
           book = options[:book]
           global = options[:global]
-          if global
-            note_titles = Helpers::NoteHelper.index_global_book
-            List.list_notes_from_book(ENV['RN_GLOBAL_BOOK_NAME'], note_titles)
-          elsif !book.nil?
+          book = ENV['RN_GLOBAL_BOOK_NAME'] if global
+          if !book.nil?
             note_titles = Helpers::NoteHelper.index_book(book)
             List.list_notes_from_book(book, note_titles)
           else
@@ -171,6 +169,54 @@ module RN
             book = options[:book]
             note = Helpers::NoteHelper.load(book, title)
             puts note.to_s
+          end
+        end
+      end
+
+      class ExportAsPDF < Dry::CLI::Command
+        desc 'Export one or more notes'
+
+        option :title, type: :string, desc: 'Title of the note'
+        option :book, type: :string, desc: 'Book'
+
+        example [
+          'todo                        # Converts a note titled "todo" from the global book',
+          '"todo"     --book "My book" # Converts a note titled "todo" from the book "My book"',
+          'thoughts   --book Memoires  # Converts a note titled "thoughts" from the book "Memoires"',
+          '--book "Memoires"           # Converts all notes from the book "Memoires"'
+        ]
+
+        def call(**options)
+          book = options[:book] || ''
+          title = options[:title] || ''
+          if !book.empty? && !title.empty?
+            # Exporta una nota de un cuaderno
+            ExportAsPDF.export_note(book, title)
+          elsif !book.empty?
+            # Exporta todas las notas de un cuaderno
+            note_titles = Helpers::NoteHelper.index_book(book)
+            note_titles.each do |note_title|
+              ExportAsPDF.export_note(book, note_title)
+            end
+          else
+            # Exporta todas las notas
+            note_titles = Helpers::NoteHelper.index
+            unless note_titles.empty?
+              note_titles.each do |key, value|
+                value.each do |title|
+                  ExportAsPDF.export_note(key, title)
+                end
+              end
+            end
+          end
+        end
+
+        class << self
+          def export_note(book, title)
+            note = Helpers::NoteHelper.load(book, title)
+            pdf_string = note.to_pdf
+            directory = Helpers::NoteHelper.working_directory(ENV['RN_DIRECTORY'], book)
+            PersistenceLayer::FilePersistenceLayer.save_file(directory, "#{note.title}.pdf", pdf_string)
           end
         end
       end
