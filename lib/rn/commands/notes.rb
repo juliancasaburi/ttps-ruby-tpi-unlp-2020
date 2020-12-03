@@ -180,10 +180,11 @@ module RN
         option :book, type: :string, desc: 'Book'
 
         example [
-          'todo                        # Converts a note titled "todo" from the global book',
-          '"todo"     --book "My book" # Converts a note titled "todo" from the book "My book"',
-          'thoughts   --book Memoires  # Converts a note titled "thoughts" from the book "Memoires"',
-          '--book "Memoires"           # Converts all notes from the book "Memoires"'
+          '                                 # Exports all notes',
+          '--title "todo"                   # Exports a note titled "todo" from the global book',
+          '--title "todo"  --book "global"  # Exports a note titled "todo" from the global book"',
+          '--title "todo"  --book "a_book"  # Exports a note titled "todo" from the book "a_book"',
+          '--book "Memoires"                # Exports all notes from the book "Memoires"'
         ]
 
         def call(**options)
@@ -192,6 +193,9 @@ module RN
           if !book.empty? && !title.empty?
             # Exporta una nota de un cuaderno
             ExportAsPDF.export_note(book, title)
+          elsif !title.empty?
+            # Exporta una nota del cuaderno global
+            ExportAsPDF.export_note(ENV['RN_GLOBAL_BOOK_NAME'], title)
           elsif !book.empty?
             # Exporta todas las notas de un cuaderno
             note_titles = Helpers::NoteHelper.index_book(book)
@@ -199,7 +203,7 @@ module RN
               ExportAsPDF.export_note(book, note_title)
             end
           else
-            # Exporta todas las notas
+            # Exporta todas las notas de todos los cuadernos
             note_titles = Helpers::NoteHelper.index
             unless note_titles.empty?
               note_titles.each do |key, value|
@@ -216,7 +220,9 @@ module RN
             note = Helpers::NoteHelper.load(book, title)
             pdf_string = note.to_pdf
             directory = Helpers::NoteHelper.working_directory(ENV['RN_DIRECTORY'], book)
-            PersistenceLayer::FilePersistenceLayer.save_file(directory, "#{note.title}.pdf", pdf_string)
+            pdf_file_name = "#{note.title}.pdf"
+            PersistenceLayer::FilePersistenceLayer.save_file(directory, pdf_file_name, pdf_string)
+            puts "La nota '#{note.title}' del cuaderno '#{book}' fue exportada exitosamente a PDF (#{directory}/#{pdf_file_name})"
           end
         end
       end
