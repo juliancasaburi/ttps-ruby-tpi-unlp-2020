@@ -41,9 +41,27 @@ end
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
+# ----- APP(non-rails) Gems -----
+
 # Authentication
 gem 'devise' 
 gem 'devise-jwt'
 
 # CORS
 gem 'rack-cors'
+
+# power-api
+gem 'power_api'
+
+group :development, :test do
+  gem 'factory_bot_rails'
+  gem 'rspec-rails'
+  gem 'rswag-specs'
+  gem 'rubocop'
+  gem 'rubocop-rspec'
+end
+
+# kramdown
+gem 'kramdown', '~> 2.3'
+
+gem 'kramdown-converter-pdf', '~> 1.0', '>= 1.0.4'

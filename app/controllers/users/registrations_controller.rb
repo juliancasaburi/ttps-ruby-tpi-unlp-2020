@@ -62,10 +62,19 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
   respond_to :json
 
+  after_action :create_global_book, only: :create
+
   def create
     build_resource(sign_up_params)
     resource.save
-    render json:resource, status: :created
+    render json: resource, status: :created
   end
 
+  def create_global_book
+    if @user.persisted?
+      book = @user.books.create do |b|
+        b.name = 'Global'
+      end
+    end
+  end
 end
