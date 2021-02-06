@@ -15,7 +15,7 @@ class Api::V1::NoteSerializer < ActiveModel::Serializer
   end
 
   def updated_at
-    object.created_at.strftime('%d/%m/%Y %I:%M:%S')
+    object.updated_at.strftime('%d/%m/%Y %I:%M:%S')
   end
 
   def book
