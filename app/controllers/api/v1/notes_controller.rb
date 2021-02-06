@@ -26,7 +26,7 @@ class Api::V1::NotesController < Api::V1::BaseController
   end
 
   def export
-    send_data note.to_pdf, filename: "#{note.title}.pdf", type: :pdf
+    send_data note.to_pdf, filename: "#{sanitize(note.book.name)}-#{sanitize(note.title)}.pdf", type: :pdf
   end
 
   private

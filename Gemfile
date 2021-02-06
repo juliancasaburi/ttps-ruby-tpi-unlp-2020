@@ -65,3 +65,6 @@ end
 gem 'kramdown', '~> 2.3'
 
 gem 'kramdown-converter-pdf', '~> 1.0', '>= 1.0.4'
+
+# rubyzip
+gem 'rubyzip', '>= 1.0.0' # will load new rubyzip version

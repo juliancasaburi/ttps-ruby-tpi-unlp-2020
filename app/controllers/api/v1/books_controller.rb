@@ -1,3 +1,5 @@
+require 'zip'
+
 class Api::V1::BooksController < Api::V1::BaseController
   before_action :authenticate_user!
 
@@ -31,6 +33,42 @@ class Api::V1::BooksController < Api::V1::BaseController
     else
       respond_with book.destroy!
     end
+  end
+
+  def export
+    # Attachment name
+    filename = "user-#{current_user.id}-exported-books-#{Date.today.strftime('%d-%m-%Y')}.zip"
+    temp_file = Tempfile.new(filename)
+
+    stringio = Zip::OutputStream.write_buffer do |zio|
+      books.each do |b|
+        sanitized_book_name = sanitize(b.name)
+        b.notes.each do |n|
+          zio.put_next_entry("#{sanitized_book_name}/#{sanitize(n.title)}.pdf")
+          zio << n.to_pdf
+        end
+      end
+    end
+    stringio.rewind
+    binary_data = stringio.sysread
+    send_data(binary_data, type: 'application/zip', filename: filename)
+  end
+
+  def export_book
+    # Attachment name
+    filename = "#{sanitize(book.name)}-export-#{Date.today.strftime('%d-%m-%Y')}.zip"
+    temp_file = Tempfile.new(filename)
+
+    stringio = Zip::OutputStream.write_buffer do |zio|
+      notes.each do |n|
+        # create and add a pdf file for this record
+        zio.put_next_entry(sanitize("#{n.title}.pdf"))
+        zio << n.to_pdf
+      end
+    end
+    stringio.rewind
+    binary_data = stringio.sysread
+    send_data(binary_data, type: 'application/zip', filename: filename)
   end
 
   def book_notes
