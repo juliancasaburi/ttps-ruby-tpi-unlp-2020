@@ -10,7 +10,17 @@ class User < ApplicationRecord
   has_many :books, inverse_of: 'user', dependent: :destroy
   has_many :notes, inverse_of: 'user', dependent: :destroy
 
+  after_save :create_global_book
+
   def global_book
     books.find_by!(name: 'Global')
+  end
+
+  private
+
+  def create_global_book
+    book = books.create do |b|
+      b.name = 'Global'
+    end
   end
 end

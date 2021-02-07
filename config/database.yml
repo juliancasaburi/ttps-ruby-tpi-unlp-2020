@@ -51,5 +51,5 @@ test:
 production:
   <<: *default
   database: ttps_ruby_tpi_unlp_2020_production
-  username: ttps_ruby_tpi_unlp_2020
-  password: <%= ENV['TTPS_RUBY_TPI_UNLP_2020_DATABASE_PASSWORD'] %>
+  username: <%= ENV['RAILS_DB_USR'] %>
+  password: <%= ENV['RAILS_DB_PWD'] %>
