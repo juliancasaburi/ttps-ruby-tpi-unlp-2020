@@ -1,111 +1,220 @@
-# rn
+# Ruby Notes
 
-Plantilla para comenzar con el Trabajo Práctico Integrador de la cursada 2020 de la materia
-Taller de Tecnologías de Producción de Software - Opción Ruby, de la Facultad de Informática
-de la Universidad Nacional de La Plata.
+Ruby Notes es una aplicación desarrollada con [Ruby on Rails 6.1.1](https://github.com/rails/rails/releases/tag/v6.1.1) como trabajo integrador de la cursada 2020 de la materia Taller de Tecnologías de Producción de Software - Opción Ruby, de la Facultad de Informática perteneciente a la Universidad Nacional de La Plata.
 
-Ruby Notes, o simplemente `rn`, es un gestor de notas concebido como un clon simplificado
-de la excelente herramienta [TomBoy](https://wiki.gnome.org/Apps/Tomboy).
+# Frontend
 
-Este proyecto es simplemente una plantilla para comenzar a implementar la herramienta e
-intenta proveer un punto de partida para el desarrollo, simplificando el _bootstrap_ del
-proyecto que puede ser una tarea que consume mucho tiempo y conlleva la toma de algunas
-decisiones que pueden tener efectos tanto positivos como negativos en el proyecto.
+El frontend, desarrollado utilizando [Vue.js](https://vuejs.org/) y el framework [Vuetify](https://vuetifyjs.com/en/) se encuentra en el repositorio:
 
-## Uso de `rn`
+https://github.com/juliancasaburi/ttps-ruby-tpi-frontend-unlp-2020
 
-Para ejecutar el comando principal de la herramienta se utiliza el script `bin/rn`, el cual
-puede correrse de las siguientes manera:
+# Backend
+
+API [Ruby on Rails 6.1.1](https://github.com/rails/rails/releases/tag/v6.1.1), con MySQL/MariaDB como gestor de bases de datos.
+
+# Instalación
+## Requerimientos
+
+* Ruby >= 2.5.0
+
+  ### Instalación de ruby 2.7.2 utilizando [rbenv](https://github.com/rbenv/rbenv)
+  ```bash
+  $ apt update -qq
+  $ apt install -y git \
+        build-essential \
+        autoconf \
+        bison \
+        curl \
+        lib{ssl,yaml,sqlite3}-dev \
+        libreadline{8,-dev} \
+        zlib1g{,-dev}
+
+
+  $ git clone https://github.com/sstephenson/rbenv.git ~/.rbenv
+  $ cd ~/.rbenv && src/configure && make -C src
+  $ echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.bashrc
+  $ echo 'eval "$(rbenv init -)"' >> ~/.bashrc
+  $ exec $SHELL -l
+  $ git clone https://github.com/sstephenson/ruby-build.git ~/.rbenv/plugins /ruby-build
+  $ rbenv install 2.7.2
+  $ rbenv global 2.7.2
+  ```
+  Puede comprobar la versión de Ruby instalada:
+  ```bash
+  $ ruby --version
+  ruby 2.7.2p137 (2020-10-01 revision 5445e04352) [x86_64-linux]
+  ```
+
+* RubyGems >= 3.2.8
+
+  ### [Actualizar rubygems](https://rubygems.org/pages/download)
+
+  ```bash
+  $ gem update --system
+  ```
+  
+* MySQL/MariaDB
+
+  ### Instalación
+
+  ```bash
+  $ sudo apt install mysql-server
+  ```
+
+  ### Configuración
+
+  ```bash
+  $ sudo mysql_secure_installation
+  ```
+
+* Bundler (Instrucciones a continuación)
+* Rails 6.1.1 (Instrucciones a continuación)
+
+## Instalación de RubyNotes
+Una vez instalados Ruby y MySQL/MariaDB
+### Descargar código fuente:
+* [Repositorio Github](https://github.com/juliancasaburi/ttps-ruby-tpi-unlp-2020.git)
+* O desde la consola, clonar el repositorio:
+
+  ```bash
+  $ git clone https://github.com/juliancasaburi/ttps-ruby-tpi-unlp-2020.git
+  ```
+  * En caso de no contar con git instalado, instalar con:
+  ```bash
+  $ sudo apt-get install git
+  ```
+  
+### Gemas:
+* Bundler:
+  ```bash
+  $ gem install bundler
+  ```
+* Rails y otras gemas requeridas por Ruby Notes
+
+  Ubicarse sobre el directorio donde se clonó/descargó el repositorio.
+
+  ```bash
+  $ cd ttps-ruby-tpi-unlp-2020
+  ```
+
+  ```bash
+  $ bundle install
+  ```
+
+# Configuración
+
+Crear archivo .env a partir de .env.example
 
 ```bash
-$ ruby bin/rn [args]
+$ cp .env.example .env
 ```
 
-O bien:
+Configurar con el usuario y password de MySQL
+
+```
+RAILS_DB_USR=
+RAILS_DB_PWD=
+```
+
+Configurar `DEVISE_JWT_SECRET_KEY`
+
+Este valor se genera con el siguiente comando:
 
 ```bash
-$ bundle exec bin/rn [args]
+$ rails secret
 ```
+  
+### Preparar base de datos:
+Ruby Notes provee datos pre-cargados (seeds) para poder probar el software.
 
-O simplemente:
+Para crear la base de datos y cargar las seeds:
 
 ```bash
-$ bin/rn [args]
+$ rails db:setup
+```
+# Iniciar web server
+
+Para iniciar el web server:
+```bash
+$ rails s
 ```
 
-Si se agrega el directorio `bin/` del proyecto a la variable de ambiente `PATH` de la shell,
-el comando puede utilizarse sin prefijar `bin/`:
+### ¡Listo!
+El servidor se encontrará funcionando en [http://localhost:3000](http://localhost:3000)
+
+# API Endpoints
+
+```http
+Prefix            Verb   URI Pattern                                                                            Controller#Action
+signup            POST   /signup                                                                                users/registrations#create
+login             POST   /login                                                                                 users/sessions#create
+logout            DELETE /logout                                                                                users/sessions#destroy
+v1_books          GET    /api/v1/books                                                                          api/v1/books#index {:format=>"json"}
+                  POST   /api/v1/books                                                                          api/v1/books#create {:format=>"json"}
+v1_book           GET    /api/v1/books/:id                                                                      api/v1/books#show  {:format=>"json"}
+                  PATCH  /api/v1/books/:id                                                                      api/v1/books#update {:format=>"json"}
+                  PUT    /api/v1/books/:id                                                                      api/v1/books#update {:format=>"json"}
+                  DELETE /api/v1/books/:id                                                                      api/v1/books#destroy {:format=>"json"}
+v1_exportBooks    GET    /api/v1/exportBooks                                                                    api/v1/books#export {:format=>"json"}
+v1                GET    /api/v1/books/:id/notes                                                                api/v1/books#book_notes {:format=>"json", :id=>/[0-9]+/}
+                  GET    /api/v1/books/:id/export                                                               api/v1/books#export_book {:format=>"json", :id=>/[0-9]+/}
+v1_notes          GET    /api/v1/notes                                                                          api/v1/notes#index {:format=>"json"}
+                  POST   /api/v1/notes                                                                          api/v1/notes#create {:format=>"json"}
+v1_note           GET    /api/v1/notes/:id                                                                      api/v1/notes#show {:format=>"json"}
+                  PATCH  /api/v1/notes/:id                                                                      api/v1/notes#update {:format=>"json"}
+                  PUT    /api/v1/notes/:id                                                                      api/v1/notes#update {:format=>"json"}
+                  DELETE /api/v1/notes/:id                                                                      api/v1/notes#destroy {:format=>"json"}
+                  GET    /api/v1/notes/:id/export                                                               api/v1/notes#export{:format=>"json":id=>/[0-9]+/}
+```
+
+# Decisiones de diseño
+
+## API
+
+La app fue creada en modo api-only
+
+https://guides.rubyonrails.org/api_app.html
 
 ```bash
-# Esto debe ejecutarse estando ubicad@ en el directorio raiz del proyecto, una única vez
-# por sesión de la shell
-$ export PATH="$(pwd)/bin:$PATH"
-$ rn [args]
+$ rails new ttps-ruby-tpi-unlp-2020 --api
 ```
 
-> Notá que para la ejecución de la herramienta, es necesario tener una versión reciente de
-> Ruby (2.5 o posterior) y tener instaladas sus dependencias, las cuales se manejan con
-> Bundler. Para más información sobre la instalación de las dependencias, consultar la
-> siguiente sección ("Desarrollo").
+## Gestión de sesiones
+Para las sesiones se utiliza JWT (JSON Web Token), usando la gema [devise-jwt](https://github.com/waiting-for-dev/devise-jwt)
 
-Documentar el uso para usuarios finales de la herramienta queda fuera del alcance de esta
-plantilla y **se deja como una tarea para que realices en tu entrega**, pisando el contenido
-de este archivo `README.md` o bien en uno nuevo. Ese archivo deberá contener cualquier
-documentación necesaria para entender el funcionamiento y uso de la herramienta que hayas
-implementado, junto con cualquier decisión de diseño del modelo de datos que consideres
-necesario documentar.
+## Control de acceso
+- Existen endpoints privados (que requieren autenticación), y endpoints que no requieren autenticación. Los únicos endpoints que no requieren autenticación son el endpoint para autenticarse y el endpoint para crear un usuario. Para acceder a los demás endpoints se requiere estar autenticado.
 
-## Desarrollo
+- Los usuarios autenticados solo pueden acceder a sus propias Notes y Books.
 
-Esta sección provee algunos tips para el desarrollo de tu entrega a partir de esta
-plantilla.
+## Global Book
 
-### Instalación de dependencias
+Todos los usuarios poseen un Book con name *Global*, el cual no puede ser eliminado ni editado.
 
-Este proyecto utiliza Bundler para manejar sus dependencias. Si aún no sabés qué es eso
-o cómo usarlo, no te preocupes: ¡lo vamos a ver en breve en la materia! Mientras tanto,
-todo lo que necesitás saber es que Bundler se encarga de instalar las dependencias ("gemas")
-que tu proyecto tenga declaradas en su archivo `Gemfile` al ejecutar el siguiente comando:
+Luego de la creación del usuario, se crea el libro *Global* para el mismo. Para este fin se utiliza el callback after_save en el modelo User.
 
-```bash
-$ bundle install
-```
+[Active record callbacks](https://guides.rubyonrails.org/active_record_callbacks.html)
 
-> Nota: Bundler debería estar disponible en tu instalación de Ruby, pero si por algún
-> motivo al intentar ejecutar el comando `bundle` obtenés un error indicando que no se
-> encuentra el comando, podés instalarlo mediante el siguiente comando:
->
-> ```bash
-> $ gem install bundler
-> ```
+## Formato de texto rico en notas
 
-Una vez que la instalación de las dependencias sea exitosa (esto deberías hacerlo solamente
-cuando estés comenzando con la utilización del proyecto), podés comenzar a probar la
-herramienta y a desarrollar tu entrega.
+Las notes soportan el formato de texto rico MarkDown.
 
-### Estructura de la plantilla
+Se utilizan las gemas
 
-El proyecto te provee una estructura inicial en la cual podés basarte para implementar tu
-entrega. Esta estructura no es necesariamente rígida, pero tené en cuenta que modificarla
-puede requerir algún trabajo adicional de tu parte.
+[kramdown](https://github.com/gettalong/kramdown) y [kramdown-converter-pdf](https://github.com/kramdown/converter-pdf)
 
-* `lib/`: directorio que contiene todas las clases del modelo y de soporte para la ejecución
-  del programa `bin/rn`.
-  * `lib/rn.rb` es la declaración del namespace `RN`, y las directivas de carga de clases
-    o módulos que estén contenidos directamente por éste (`autoload`).
-  * `lib/rn/` es el directorio que representa el namespace `RN`. Notá la convención de que
-    el uso de un módulo como namespace se refleja en la estructura de archivos del proyecto
-    como un directorio con el mismo nombre que el archivo `.rb` que define el módulo, pero
-    sin la terminación `.rb`. Dentro de este directorio se ubicarán los elementos del
-    proyecto que estén bajo el namespace `RN` - que, también por convención y para facilitar
-    la organización, deberían ser todos. Es en este directorio donde deberías ubicar tus
-    clases de modelo, módulos, clases de soporte, etc. Tené en cuenta que para que todo
-    funcione correctamente, seguramente debas agregar nuevas directivas de carga en la
-    definición del namespace `RN` (o dónde corresponda, según tus decisiones de diseño).
-  * `lib/rn/commands.rb` y `lib/rn/commands/*.rb` son las definiciones de comandos de
-    `dry-cli` que se utilizarán. En estos archivos es donde comenzarás a realizar la
-    implementación de las operaciones en sí, que en esta plantilla están provistas como
-    simples disparadores.
-  * `lib/rn/version.rb` define la versión de la herramienta, utilizando [SemVer](https://semver.org/lang/es/).
-* `bin/`: directorio donde reside cualquier archivo ejecutable, siendo el más notorio `rn`
-  que se utiliza como punto de entrada para el uso de la herramienta.
+## Exportación de una nota
+
+La nota puede ser exportada en formato pdf.
+
+## Exportación de un libro
+
+Se exportan todas las notas de un libro. Se exporta cada Note como pdf y se empaquetan las mismas en un archivo .zip
+
+Para lograr esta funcionalidad, se utiliza la gema [rubyzip](https://github.com/rubyzip/rubyzip)
+
+## Exportación de todos los libros de un usuario
+
+Se exportan todas las notas de todos los libros del usuario. Se crea una carpeta por Book, se exporta cada nota como pdf y se empaquetan las mismas en un archivo .zip
+
+Para lograr esta funcionalidad, se utiliza la gema [rubyzip](https://github.com/rubyzip/rubyzip)
