@@ -13,6 +13,29 @@ https://github.com/juliancasaburi/ttps-ruby-tpi-frontend-unlp-2020
 API [Ruby on Rails 6.1.1](https://github.com/rails/rails/releases/tag/v6.1.1), con MySQL/MariaDB como gestor de bases de datos.
 
 # Instalación
+
+## Instalación con Docker
+
+Copiar db-variables.example.env a db-variables.env
+
+```bash
+$ cp db-variables.example.env db-variables.env
+```
+
+Configurar el usuario y password de MariaDB
+
+```
+MYSQL_ROOT_PASSWORD=
+MYSQL_USER=
+MYSQL_PASSWORD=
+```
+
+```bash
+$ sudo docker-compose up -d
+```
+
+## Instalación sin Docker
+
 ## Requerimientos
 
 * Ruby >= 2.5.0
@@ -127,11 +150,28 @@ $ rails secret
 ### Preparar base de datos:
 Ruby Notes provee datos pre-cargados (seeds) para poder probar el software.
 
-Para crear la base de datos y cargar las seeds:
+Si desea crear la base de datos y cargar las seeds:
 
 ```bash
 $ rails db:setup
 ```
+
+Si solamente quiere crear la base de datos, sin los datos de prueba
+
+```bash
+$ rails db:create db:migrate
+```
+
+### Con docker:
+
+```bash
+$ sudo docker-compose run app rails db:setup   
+```
+
+```bash
+$ sudo docker-compose run app rails db:create db:migrate 
+```
+
 # Iniciar web server
 
 Para iniciar el web server:
